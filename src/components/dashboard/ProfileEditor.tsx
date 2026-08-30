@@ -2251,7 +2251,25 @@ export function ProfileEditor() {
           </div>
 
           <div className="scrollbar-slim flex max-h-[60vh] min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 pb-8 pt-3">
-            {groups.length === 0 ? (
+            {pastedUrl && (
+              <button
+                type="button"
+                onClick={() => addBlock("link", pastedUrl)}
+                className="flex items-center gap-3 rounded-2xl border border-primary/40 bg-primary/5 p-3 text-left transition-colors hover:border-primary/70"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/40">
+                  <SocialPlatformIcon source="link" className="h-[18px] w-[18px]" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-xs font-medium">Smart Link toevoegen</span>
+                  <span className="block truncate text-[11px] text-muted-foreground">{pastedUrl}</span>
+                </span>
+                <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium">
+                  URL gedetecteerd
+                </span>
+              </button>
+            )}
+            {groups.length === 0 && !pastedUrl ? (
               <p className="py-6 text-center text-xs text-muted-foreground">No results.</p>
             ) : (
               groups.map((g) => (
