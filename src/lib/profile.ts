@@ -990,6 +990,7 @@ export function blockHref(block: ProfileBlock): string {
     case "wifi":
     case "newsletter":
     case "booking_request":
+    case "media_gallery":
       return "";
     case "calendar":
       return raw.startsWith("http") ? raw : `https://${raw.replace(/^\/+/, "")}`;
