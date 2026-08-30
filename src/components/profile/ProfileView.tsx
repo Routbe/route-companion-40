@@ -376,6 +376,8 @@ export function ProfileView({
                   config={parseGalleryConfig(b.value)}
                   style={buttonStyle}
                 />
+              ) : b.kind === "media_embed" ? (
+                <MediaEmbedCard key={b.id} value={b.value} style={buttonStyle} />
               ) : b.kind === "booking_request" ? (
                 <BookingCard
                   key={b.id}

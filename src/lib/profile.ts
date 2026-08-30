@@ -689,6 +689,12 @@ export const BLOCK_KINDS: {
     placeholder: "Mijn galerij",
   },
   {
+    kind: "media_embed",
+    label: "Video, Muziek & Documenten",
+    category: "media",
+    placeholder: "Plak een YouTube-, Spotify- of PDF-link…",
+  },
+  {
     kind: "promo",
     label: "Promo / Featured link",
     category: "contact",
@@ -724,7 +730,7 @@ export const BLOCK_TABS: {
     id: "standard",
     label: "⚡ Standaard & Embeds",
     description: "Smart links, universele embeds en opmaak",
-    kinds: ["link", "website", "media_gallery", "text", "spacer", "youtube", "spotify", "soundcloud"],
+    kinds: ["link", "website", "media_embed", "media_gallery", "text", "spacer", "youtube", "spotify", "soundcloud"],
   },
   {
     id: "sovereign",
@@ -1041,6 +1047,7 @@ export function blockHref(block: ProfileBlock): string {
     case "newsletter":
     case "booking_request":
     case "media_gallery":
+    case "media_embed":
       return "";
     case "calendar":
       return raw.startsWith("http") ? raw : `https://${raw.replace(/^\/+/, "")}`;
@@ -1063,7 +1070,8 @@ export const isWidgetBlock = (kind: string) =>
   kind === "newsletter" ||
   kind === "calendar" ||
   kind === "booking_request" ||
-  kind === "media_gallery";
+  kind === "media_gallery" ||
+  kind === "media_embed";
 
 export const newBlockId = () =>
   `b_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
