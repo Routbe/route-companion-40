@@ -754,6 +754,7 @@ export const BLOCK_CATEGORIES = [
   { id: "finance", label: "Financiën" },
   { id: "media", label: "Media & gaming" },
   { id: "contact", label: "Contact & utilities" },
+  { id: "layout", label: "Layout & tekst" },
 ] as const;
 
 /**
