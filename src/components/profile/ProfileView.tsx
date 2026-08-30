@@ -9,6 +9,8 @@ import {
 } from "@/components/profile/ProfileWidgets";
 import { BookingCard } from "@/components/profile/BookingCard";
 import { parseBookingConfig } from "@/lib/booking";
+import { GalleryCard } from "@/components/profile/GalleryCard";
+import { parseGalleryConfig } from "@/lib/gallery";
 import { SocialPlatformIcon } from "@/lib/social-icons";
 import { PLATFORM_LABEL, formatFollowers } from "@/lib/social-verify";
 import { formatReach } from "@/lib/total-reach";
