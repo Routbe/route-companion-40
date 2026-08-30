@@ -22,3 +22,10 @@
 - [x] Promo-sms: mobiel opent berichten-app, desktop toont QR
 - [ ] Cadeaubonnen (koop, factuur, PDF, 3D, gratis fysieke levering BE)
 - [ ] Promomail-bezorging verifiëren in productie (Brevo)
+
+## Social handles & media gallery (nieuw)
+- [ ] Unit tests smart-paste parser (`src/lib/social-handles.test.ts`)
+- [ ] Realtime publieke linkpreview in handle-invoer
+- [ ] Platformspecifieke inline validatie (Instagram/GitHub/X)
+- [ ] Lowercase normalisatie bij opslaan & renderen
+- [ ] Native `media_gallery` component (Studio editor, upload/URL-modal, GalleryCard)

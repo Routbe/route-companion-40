@@ -53,7 +53,8 @@ export function extractHandle(kind: string, raw: string): string {
   let value = (raw ?? "").trim();
   if (!value) return "";
 
-  const looksLikeUrl = /^(https?:\/\/|www\.)/i.test(value) || /[a-z0-9-]+\.[a-z]{2,}\//i.test(value);
+  const looksLikeUrl =
+    /^(https?:\/\/|www\.)/i.test(value) || /[a-z0-9-]+\.[a-z]{2,}\//i.test(value);
 
   if (looksLikeUrl) {
     for (const pattern of PLATFORM_PATTERNS[kind] ?? []) {
@@ -80,7 +81,50 @@ export function extractHandle(kind: string, raw: string): string {
 /** Volledige publieke URL voor een platform + handle. */
 export function socialUrl(kind: string, handle: string): string {
   const def = BLOCK_KINDS.find((k) => k.kind === kind);
-  const clean = handle.replace(/^@+/, "").trim();
+  const clean = normalizeSocialHandle(handle);
   if (!def?.base || !clean) return "";
   return `${def.base}${clean}`;
+}
+
+/** Platformspecifieke handleregels voor inline validatie. */
+export const HANDLE_RULES: Record<
+  string,
+  { pattern: RegExp; maxLength: number; label: string; extra?: (h: string) => boolean }
+> = {
+  instagram: { pattern: /^[a-zA-Z0-9_.]+$/, maxLength: 30, label: "Instagram" },
+  github: {
+    pattern: /^[a-zA-Z0-9-]+$/,
+    maxLength: 39,
+    label: "GitHub",
+    // Geen opeenvolgende koppeltekens, niet beginnen/eindigen met een koppelteken.
+    extra: (h) => !h.includes("--") && !h.startsWith("-") && !h.endsWith("-"),
+  },
+  x: { pattern: /^[a-zA-Z0-9_]{1,15}$/, maxLength: 15, label: "X" },
+  twitter: { pattern: /^[a-zA-Z0-9_]{1,15}$/, maxLength: 15, label: "X" },
+  tiktok: { pattern: /^[a-zA-Z0-9_.]+$/, maxLength: 24, label: "TikTok" },
+  twitch: { pattern: /^[a-zA-Z0-9_]+$/, maxLength: 25, label: "Twitch" },
+  telegram: { pattern: /^[a-zA-Z0-9_]+$/, maxLength: 32, label: "Telegram" },
+};
+
+/** Trim + lowercase: de vorm die we opslaan en in publieke links gebruiken. */
+export function normalizeSocialHandle(raw: string): string {
+  return (raw ?? "").trim().replace(/^@+/, "").toLowerCase();
+}
+
+/**
+ * Inline validatiemelding voor een handle, of `null` wanneer alles klopt.
+ * Lege invoer geeft geen fout (het veld is dan simpelweg niet ingevuld).
+ */
+export function handleValidationError(kind: string, raw: string): string | null {
+  const handle = normalizeSocialHandle(raw);
+  if (!handle) return null;
+  const rule = HANDLE_RULES[kind];
+  if (!rule) return null;
+  if (handle.length > rule.maxLength) {
+    return `⚠️ Maximaal ${rule.maxLength} tekens voor een ${rule.label} handle`;
+  }
+  if (!rule.pattern.test(handle) || (rule.extra && !rule.extra(handle))) {
+    return `⚠️ Ongeldige tekens voor ${rule.label} handle`;
+  }
+  return null;
 }
