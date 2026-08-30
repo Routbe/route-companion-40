@@ -76,6 +76,7 @@ import { cn } from "@/lib/utils";
 import {
   BLOCK_CATEGORIES,
   BLOCK_KINDS,
+  BLOCK_TABS,
   CARD_STYLES,
   handleRuleHint,
   HANDLE_MIN_LENGTH,
@@ -132,6 +133,7 @@ import { oauthAvatarOf } from "@/lib/oauth-avatar";
 import { BlueskyWizard } from "@/components/dashboard/BlueskyWizard";
 import { BookingBlockSettings } from "@/components/dashboard/BookingBlockSettings";
 import { GalleryBlockSettings } from "@/components/dashboard/GalleryBlockSettings";
+import { MediaEmbedBlockSettings } from "@/components/dashboard/MediaEmbedBlockSettings";
 import { SocialHandleInput } from "@/components/SocialHandleInput";
 import { isHandleBlock } from "@/lib/social-handles";
 
@@ -236,6 +238,8 @@ export function ProfileEditor() {
   const [query, setQuery] = useState("");
   /** Standaard staat "Soeverein & Fediverse" voor: soevereine tools eerst. */
   const [cat, setCat] = useState<string>("featured");
+  /** Actieve curated tab in de "+ Add component"-drawer (`null` = klassieke categorieën). */
+  const [blockTab, setBlockTab] = useState<string | null>(null);
   /** Live view: realistisch telefoonframe of breed desktopvenster. */
   const [previewDevice, setPreviewDevice] = useState<"mobile" | "desktop">("mobile");
   /** Desktopscherm: werkelijke containerbreedte → schaalfactor voor het 1280px-virtuele viewport. */
@@ -500,14 +504,31 @@ export function ProfileEditor() {
     if (!silent) toast.success("Studio saved");
   };
 
-  const addBlock = (kind: string) => {
+  const addBlock = (kind: string, value = "") => {
     const def = BLOCK_KINDS.find((k) => k.kind === kind)!;
     const id = newBlockId();
-    setBlocks((b) => [...b, { id, kind, label: def.label, value: "" }]);
+    setBlocks((b) => [...b, { id, kind, label: def.label, value }]);
     setOpenBlock(id);
     setDrawer(false);
     // Search term and category are kept for next time.
   };
+
+  /**
+   * Plakt de maker een geldige URL in het zoekveld, dan bieden we direct een
+   * vooraf ingevuld Smart Link-component aan (fast paste → smart link).
+   */
+  const pastedUrl = useMemo(() => {
+    const q = query.trim();
+    if (q.length < 6 || q.includes(" ")) return null;
+    const withProto = /^https?:\/\//i.test(q) ? q : `https://${q}`;
+    try {
+      const u = new URL(withProto);
+      if (!u.hostname.includes(".")) return null;
+      return u.toString();
+    } catch {
+      return null;
+    }
+  }, [query]);
 
   const quickCreate = (kind: (typeof QUICK_CREATE)[number]["kind"]) => {
     if (kind === "__socials") {
@@ -570,6 +591,17 @@ export function ProfileEditor() {
 
   const groups = useMemo(() => {
     const q = query.trim().toLowerCase();
+    // Curated tab actief → toon alleen de kinds van die tab als één groep.
+    if (blockTab) {
+      const tab = BLOCK_TABS.find((t) => t.id === blockTab);
+      if (tab) {
+        const items = tab.kinds
+          .map((kind) => BLOCK_KINDS.find((k) => k.kind === kind))
+          .filter((k): k is (typeof BLOCK_KINDS)[number] => Boolean(k))
+          .filter((k) => !q || k.label.toLowerCase().includes(q));
+        return items.length ? [{ id: tab.id, label: tab.label, items }] : [];
+      }
+    }
     return BLOCK_CATEGORIES.filter((c) => cat === "all" || cat === c.id)
       .map((c) => ({
         ...c,
@@ -578,7 +610,7 @@ export function ProfileEditor() {
         ),
       }))
       .filter((c) => c.items.length > 0);
-  }, [cat, query]);
+  }, [cat, query, blockTab]);
 
   // Top clicked components: proportional estimate over total scans, ranked by position
   // until per-block click tracking ships. Purely presentational, no fabricated identities.
@@ -878,6 +910,12 @@ export function ProfileEditor() {
                           <div className="mt-3 space-y-2 border-t border-border pt-3">
                             {b.kind === "media_gallery" ? (
                               <GalleryBlockSettings
+                                value={b.value}
+                                onChange={(value) => patch(b.id, { value })}
+                                onTitle={(label) => patch(b.id, { label })}
+                              />
+                            ) : b.kind === "media_embed" ? (
+                              <MediaEmbedBlockSettings
                                 value={b.value}
                                 onChange={(value) => patch(b.id, { value })}
                                 onTitle={(label) => patch(b.id, { label })}
@@ -2141,13 +2179,20 @@ export function ProfileEditor() {
                   autoFocus
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
+                  onPaste={(e) => {
+                    const text = e.clipboardData.getData("text").trim();
+                    if (/^(https?:\/\/)?[\w-]+(\.[\w-]+)+/.test(text) && !text.includes(" ")) {
+                      e.preventDefault();
+                      setQuery(text);
+                    }
+                  }}
                   onKeyDown={(e) => {
                     if (e.key !== "Enter") return;
                     e.preventDefault();
                     const first = groups[0]?.items[0];
                     if (first) addBlock(first.kind);
                   }}
-                  placeholder="Search a platform…"
+                  placeholder="Zoek een component of plak direct een URL…"
                   className="input-field h-11 rounded-xl pl-9 pr-9"
                   aria-label="Search a component"
                 />
@@ -2166,13 +2211,37 @@ export function ProfileEditor() {
                 )}
               </div>
             </div>
+            {/* Curated high-value tabs */}
+            <div className="overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex w-max min-w-full items-center gap-2">
+                {BLOCK_TABS.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    title={t.description}
+                    onClick={() => setBlockTab(blockTab === t.id ? null : t.id)}
+                    className={cn(
+                      "inline-flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 text-xs font-medium transition-colors",
+                      blockTab === t.id
+                        ? "border-primary/40 bg-primary/10 text-foreground"
+                        : "border-border text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="overflow-x-auto px-4 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <div className="flex w-max min-w-full items-center gap-2">
                 {[{ id: "all", label: "All" }, ...BLOCK_CATEGORIES].map((c) => (
                   <button
                     key={c.id}
                     type="button"
-                    onClick={() => setCat(c.id)}
+                    onClick={() => {
+                      setCat(c.id);
+                      setBlockTab(null);
+                    }}
                     className={cn(
                       "inline-flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 text-xs font-medium transition-colors",
                       cat === c.id
@@ -2189,7 +2258,25 @@ export function ProfileEditor() {
           </div>
 
           <div className="scrollbar-slim flex max-h-[60vh] min-h-0 flex-1 flex-col gap-4 overflow-y-auto px-4 pb-8 pt-3">
-            {groups.length === 0 ? (
+            {pastedUrl && (
+              <button
+                type="button"
+                onClick={() => addBlock("link", pastedUrl)}
+                className="flex items-center gap-3 rounded-2xl border border-primary/40 bg-primary/5 p-3 text-left transition-colors hover:border-primary/70"
+              >
+                <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-border bg-muted/40">
+                  <SocialPlatformIcon source="link" className="h-[18px] w-[18px]" />
+                </span>
+                <span className="min-w-0 flex-1">
+                  <span className="block text-xs font-medium">Smart Link toevoegen</span>
+                  <span className="block truncate text-[11px] text-muted-foreground">{pastedUrl}</span>
+                </span>
+                <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium">
+                  URL gedetecteerd
+                </span>
+              </button>
+            )}
+            {groups.length === 0 && !pastedUrl ? (
               <p className="py-6 text-center text-xs text-muted-foreground">No results.</p>
             ) : (
               groups.map((g) => (

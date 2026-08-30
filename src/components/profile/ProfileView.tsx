@@ -10,6 +10,7 @@ import {
 import { BookingCard } from "@/components/profile/BookingCard";
 import { parseBookingConfig } from "@/lib/booking";
 import { GalleryCard } from "@/components/profile/GalleryCard";
+import { MediaEmbedCard } from "@/components/profile/MediaEmbedCard";
 import { parseGalleryConfig } from "@/lib/gallery";
 import { SocialPlatformIcon } from "@/lib/social-icons";
 import { PLATFORM_LABEL, formatFollowers } from "@/lib/social-verify";
@@ -68,7 +69,10 @@ export function ProfileView({
   const blocks = profile.blocks.filter(
     (b) =>
       !b.hidden &&
-      (b.value.trim() !== "" || b.kind === "newsletter" || b.kind === "booking_request"),
+      (b.value.trim() !== "" ||
+        b.kind === "newsletter" ||
+        b.kind === "booking_request" ||
+        b.kind === "spacer"),
   );
   const buttonStyle = blockButtonStyle(profile.card_style, t);
   /** Eigen canvas- en patroonkleuren overschrijven het thema, indien gekozen. */
@@ -346,7 +350,17 @@ export function ProfileView({
             </p>
           )}
           {blocks.map((b) =>
-            isPromoBlock(b.kind) ? (
+            b.kind === "spacer" ? (
+              <div key={b.id} className="h-6 w-full" aria-hidden />
+            ) : b.kind === "text" ? (
+              <p
+                key={b.id}
+                className="w-full whitespace-pre-line px-2 py-1 text-center text-sm leading-relaxed"
+                style={{ color: t.muted }}
+              >
+                {b.value}
+              </p>
+            ) : isPromoBlock(b.kind) ? (
               <PromoBlock
                 key={b.id}
                 href={blockHref(b)}
@@ -363,6 +377,8 @@ export function ProfileView({
                   config={parseGalleryConfig(b.value)}
                   style={buttonStyle}
                 />
+              ) : b.kind === "media_embed" ? (
+                <MediaEmbedCard key={b.id} value={b.value} style={buttonStyle} />
               ) : b.kind === "booking_request" ? (
                 <BookingCard
                   key={b.id}

@@ -251,7 +251,7 @@ export const profilePath = (username: string, verified?: boolean) =>
 export const BLOCK_KINDS: {
   kind: string;
   label: string;
-  category: "featured" | "socials" | "web" | "finance" | "media" | "contact";
+  category: "featured" | "socials" | "web" | "finance" | "media" | "contact" | "layout";
   placeholder: string;
   /** Turns a handle into a full URL. */
   base?: string;
@@ -689,12 +689,67 @@ export const BLOCK_KINDS: {
     placeholder: "Mijn galerij",
   },
   {
+    kind: "media_embed",
+    label: "Video, Muziek & Documenten",
+    category: "media",
+    placeholder: "Plak een YouTube-, Spotify- of PDF-link…",
+  },
+  {
     kind: "promo",
     label: "Promo / Featured link",
     category: "contact",
     placeholder: "https://…",
   },
+  // Layout-elementen: geen link, alleen visuele structuur op het profiel.
+  {
+    kind: "text",
+    label: "Tekstblok",
+    category: "layout",
+    placeholder: "Schrijf een korte tekst…",
+  },
+  {
+    kind: "spacer",
+    label: "Spacer / witruimte",
+    category: "layout",
+    placeholder: "",
+  },
 
+];
+
+/**
+ * Curated “+ Add component” tabs: vier high-value groepen bovenop de
+ * klassieke categorieën. Elke tab wijst naar bestaande block kinds.
+ */
+export const BLOCK_TABS: {
+  id: string;
+  label: string;
+  description: string;
+  kinds: string[];
+}[] = [
+  {
+    id: "standard",
+    label: "⚡ Standaard & Embeds",
+    description: "Smart links, universele embeds en opmaak",
+    kinds: ["link", "website", "media_embed", "media_gallery", "text", "spacer", "youtube", "spotify", "soundcloud"],
+  },
+  {
+    id: "sovereign",
+    label: "🌐 Soeverein & Sociaal",
+    description: "Fediverse, socials en eigen kanalen",
+    kinds: ["eyou", "wsocial", "bluesky", "mastodon", "matrix", "signal", "pixelfed", "substack", "instagram", "tiktok", "x", "github"],
+  },
+  {
+    id: "microapps",
+    label: "🧰 Native Micro-apps",
+    description: "Boekingen, contact en e-mailcapture",
+    kinds: ["booking_request", "calendar", "calcom", "calendly", "vcard", "newsletter"],
+  },
+  {
+    id: "commerce",
+    label: "💳 Commerce & Donaties",
+    description: "Tips, donaties en productshowcases",
+    kinds: ["kofi", "bmac", "patreon", "opencollective", "paypal", "stripe", "tikkie", "shop", "promo"],
+  },
 ];
 
 
@@ -705,6 +760,7 @@ export const BLOCK_CATEGORIES = [
   { id: "finance", label: "Financiën" },
   { id: "media", label: "Media & gaming" },
   { id: "contact", label: "Contact & utilities" },
+  { id: "layout", label: "Layout & tekst" },
 ] as const;
 
 /**
@@ -991,6 +1047,7 @@ export function blockHref(block: ProfileBlock): string {
     case "newsletter":
     case "booking_request":
     case "media_gallery":
+    case "media_embed":
       return "";
     case "calendar":
       return raw.startsWith("http") ? raw : `https://${raw.replace(/^\/+/, "")}`;
@@ -1013,7 +1070,8 @@ export const isWidgetBlock = (kind: string) =>
   kind === "newsletter" ||
   kind === "calendar" ||
   kind === "booking_request" ||
-  kind === "media_gallery";
+  kind === "media_gallery" ||
+  kind === "media_embed";
 
 export const newBlockId = () =>
   `b_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
