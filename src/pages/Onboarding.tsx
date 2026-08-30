@@ -8,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Turnstile } from "@/components/Turnstile";
 import { SocialHandleInput } from "@/components/SocialHandleInput";
+import { normalizeSocialHandle } from "@/lib/social-handles";
 import { ProfileView } from "@/components/profile/ProfileView";
 import { useAuth } from "@/hooks/useAuth";
 import { notifyError, notifySuccess } from "@/lib/notify";
@@ -156,7 +157,7 @@ export default function Onboarding() {
         id: `onboarding-${s.kind}`,
         kind: s.kind,
         label: s.label,
-        value: (socials[s.kind] ?? "").trim(),
+        value: normalizeSocialHandle(socials[s.kind] ?? ""),
       })),
     [socials],
   );

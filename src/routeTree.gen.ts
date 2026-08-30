@@ -73,6 +73,7 @@ import { Route as ApiBunqCheckStatusRouteImport } from './routes/api_.bunq.check
 import { Route as ApiProfilesCheckHandleRouteImport } from './routes/api_.profiles.check-handle'
 import { Route as ApiPublicAvatarRouteImport } from './routes/api_.public.avatar'
 import { Route as ApiPublicBrandLogoRouteImport } from './routes/api_.public.brand-logo'
+import { Route as ApiPublicGalleryMediaRouteImport } from './routes/api_.public.gallery-media'
 import { Route as ApiPublicHealthRouteImport } from './routes/api_.public.health'
 import { Route as ApiPublicStripeWebhookRouteImport } from './routes/api_.public.stripe-webhook'
 import { Route as AuthGitlabCallbackRouteImport } from './routes/auth_.gitlab.callback'
@@ -421,6 +422,11 @@ const ApiPublicBrandLogoRoute = ApiPublicBrandLogoRouteImport.update({
   path: '/api/public/brand-logo',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicGalleryMediaRoute = ApiPublicGalleryMediaRouteImport.update({
+  id: '/api_/public/gallery-media',
+  path: '/api/public/gallery-media',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHealthRoute = ApiPublicHealthRouteImport.update({
   id: '/api_/public/health',
   path: '/api/public/health',
@@ -593,6 +599,7 @@ export interface FileRoutesByFullPath {
   '/api/profiles/check-handle': typeof ApiProfilesCheckHandleRoute
   '/api/public/avatar': typeof ApiPublicAvatarRoute
   '/api/public/brand-logo': typeof ApiPublicBrandLogoRoute
+  '/api/public/gallery-media': typeof ApiPublicGalleryMediaRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
   '/auth/gitlab/callback': typeof AuthGitlabCallbackRoute
@@ -678,6 +685,7 @@ export interface FileRoutesByTo {
   '/api/profiles/check-handle': typeof ApiProfilesCheckHandleRoute
   '/api/public/avatar': typeof ApiPublicAvatarRoute
   '/api/public/brand-logo': typeof ApiPublicBrandLogoRoute
+  '/api/public/gallery-media': typeof ApiPublicGalleryMediaRoute
   '/api/public/health': typeof ApiPublicHealthRoute
   '/api/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
   '/auth/gitlab/callback': typeof AuthGitlabCallbackRoute
@@ -765,6 +773,7 @@ export interface FileRoutesById {
   '/api_/profiles/check-handle': typeof ApiProfilesCheckHandleRoute
   '/api_/public/avatar': typeof ApiPublicAvatarRoute
   '/api_/public/brand-logo': typeof ApiPublicBrandLogoRoute
+  '/api_/public/gallery-media': typeof ApiPublicGalleryMediaRoute
   '/api_/public/health': typeof ApiPublicHealthRoute
   '/api_/public/stripe-webhook': typeof ApiPublicStripeWebhookRoute
   '/auth_/gitlab/callback': typeof AuthGitlabCallbackRoute
@@ -852,6 +861,7 @@ export interface FileRouteTypes {
     | '/api/profiles/check-handle'
     | '/api/public/avatar'
     | '/api/public/brand-logo'
+    | '/api/public/gallery-media'
     | '/api/public/health'
     | '/api/public/stripe-webhook'
     | '/auth/gitlab/callback'
@@ -937,6 +947,7 @@ export interface FileRouteTypes {
     | '/api/profiles/check-handle'
     | '/api/public/avatar'
     | '/api/public/brand-logo'
+    | '/api/public/gallery-media'
     | '/api/public/health'
     | '/api/public/stripe-webhook'
     | '/auth/gitlab/callback'
@@ -1023,6 +1034,7 @@ export interface FileRouteTypes {
     | '/api_/profiles/check-handle'
     | '/api_/public/avatar'
     | '/api_/public/brand-logo'
+    | '/api_/public/gallery-media'
     | '/api_/public/health'
     | '/api_/public/stripe-webhook'
     | '/auth_/gitlab/callback'
@@ -1091,6 +1103,7 @@ export interface RootRouteChildren {
   ApiProfilesCheckHandleRoute: typeof ApiProfilesCheckHandleRoute
   ApiPublicAvatarRoute: typeof ApiPublicAvatarRoute
   ApiPublicBrandLogoRoute: typeof ApiPublicBrandLogoRoute
+  ApiPublicGalleryMediaRoute: typeof ApiPublicGalleryMediaRoute
   ApiPublicHealthRoute: typeof ApiPublicHealthRoute
   ApiPublicStripeWebhookRoute: typeof ApiPublicStripeWebhookRoute
   AuthMastodonCallbackRoute: typeof AuthMastodonCallbackRoute
@@ -1557,6 +1570,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicBrandLogoRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api_/public/gallery-media': {
+      id: '/api_/public/gallery-media'
+      path: '/api/public/gallery-media'
+      fullPath: '/api/public/gallery-media'
+      preLoaderRoute: typeof ApiPublicGalleryMediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api_/public/health': {
       id: '/api_/public/health'
       path: '/api/public/health'
@@ -1886,6 +1906,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiProfilesCheckHandleRoute: ApiProfilesCheckHandleRoute,
   ApiPublicAvatarRoute: ApiPublicAvatarRoute,
   ApiPublicBrandLogoRoute: ApiPublicBrandLogoRoute,
+  ApiPublicGalleryMediaRoute: ApiPublicGalleryMediaRoute,
   ApiPublicHealthRoute: ApiPublicHealthRoute,
   ApiPublicStripeWebhookRoute: ApiPublicStripeWebhookRoute,
   AuthMastodonCallbackRoute: AuthMastodonCallbackRoute,

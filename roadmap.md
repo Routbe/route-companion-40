@@ -22,3 +22,10 @@
 - [x] Promo-sms: mobiel opent berichten-app, desktop toont QR
 - [ ] Cadeaubonnen (koop, factuur, PDF, 3D, gratis fysieke levering BE)
 - [ ] Promomail-bezorging verifiëren in productie (Brevo)
+
+## Social handles & media gallery (nieuw)
+- [x] Unit tests smart-paste parser (`src/lib/social-handles.test.ts`)
+- [x] Realtime publieke linkpreview in handle-invoer
+- [x] Platformspecifieke inline validatie (Instagram/GitHub/X)
+- [x] Lowercase normalisatie bij opslaan & renderen
+- [x] Native `media_gallery` component (Studio editor, upload/URL-modal, GalleryCard) — db/35_gallery_media.sql moet nog op Neon uitgevoerd worden

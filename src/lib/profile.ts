@@ -683,6 +683,12 @@ export const BLOCK_KINDS: {
     placeholder: "Plan een afspraak / gesprek",
   },
   {
+    kind: "media_gallery",
+    label: "Galerij / Media (ROUT native)",
+    category: "media",
+    placeholder: "Mijn galerij",
+  },
+  {
     kind: "promo",
     label: "Promo / Featured link",
     category: "contact",
@@ -984,6 +990,7 @@ export function blockHref(block: ProfileBlock): string {
     case "wifi":
     case "newsletter":
     case "booking_request":
+    case "media_gallery":
       return "";
     case "calendar":
       return raw.startsWith("http") ? raw : `https://${raw.replace(/^\/+/, "")}`;
@@ -1003,7 +1010,10 @@ export function blockHref(block: ProfileBlock): string {
 
 /** Blokken die als interactieve widget renderen i.p.v. als gewone linkknop. */
 export const isWidgetBlock = (kind: string) =>
-  kind === "newsletter" || kind === "calendar" || kind === "booking_request";
+  kind === "newsletter" ||
+  kind === "calendar" ||
+  kind === "booking_request" ||
+  kind === "media_gallery";
 
 export const newBlockId = () =>
   `b_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;

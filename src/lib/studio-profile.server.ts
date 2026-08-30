@@ -1,3 +1,4 @@
+import { isHandleBlock, normalizeSocialHandle } from "./social-handles";
 import { sql } from "@/lib/neon";
 import { isReservedHandle, normalizeHandle } from "@/lib/profile";
 import { normalizeHandleForStorage } from "@/lib/handle-rules";
@@ -75,6 +76,21 @@ export type StudioProfileInput = {
   displayPrefs?: Record<string, unknown> | null;
 };
 
+/**
+ * Zet de handle van elk sociaal blok om naar de canonieke opslagvorm
+ * (getrimd, zonder `@`, lowercase). Niet-sociale blokken blijven ongemoeid.
+ */
+function normalizeBlockHandles(blocks: unknown[]): unknown[] {
+  return blocks.map((block) => {
+    if (!block || typeof block !== "object") return block;
+    const b = block as Record<string, unknown>;
+    const kind = typeof b["kind"] === "string" ? (b["kind"] as string) : "";
+    const value = typeof b["value"] === "string" ? (b["value"] as string) : "";
+    if (!kind || !value || !isHandleBlock(kind)) return block;
+    return { ...b, value: normalizeSocialHandle(value) };
+  });
+}
+
 export async function writeStudioProfile(userId: string, input: StudioProfileInput) {
   // Canonieke opslagvorm: lowercase, geen spaties, alleen toegestane tekens.
   const username = normalizeHandleForStorage(input.username);
@@ -122,6 +138,10 @@ export async function writeStudioProfile(userId: string, input: StudioProfileInp
     if (issue) throw new Error("handle_identity_mismatch");
   }
 
+  // Sociale handles worden canoniek (getrimd + lowercase) bewaard, zodat
+  // publieke links altijd dezelfde vorm hebben.
+  const blocks = normalizeBlockHandles(input.blocks ?? []);
+
   const rows = (await sql`
     insert into public.profiles (
       id, username, display_name, tagline, avatar_url, favicon_url, theme, card_style, blocks, updated_at
@@ -129,7 +149,7 @@ export async function writeStudioProfile(userId: string, input: StudioProfileInp
       ${userId}, ${username}, ${input.displayName ?? null}, ${input.tagline ?? null},
       ${input.avatarUrl ?? null}, ${input.faviconUrl ?? null},
       ${input.theme ?? "noir"}, ${input.cardStyle ?? "bordered"},
-      ${JSON.stringify(input.blocks ?? [])}, now()
+      ${JSON.stringify(blocks)}, now()
     )
     on conflict (id) do update set
       username = excluded.username,
