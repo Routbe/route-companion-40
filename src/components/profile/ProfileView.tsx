@@ -10,6 +10,7 @@ import {
 import { BookingCard } from "@/components/profile/BookingCard";
 import { parseBookingConfig } from "@/lib/booking";
 import { GalleryCard } from "@/components/profile/GalleryCard";
+import { MediaEmbedCard } from "@/components/profile/MediaEmbedCard";
 import { parseGalleryConfig } from "@/lib/gallery";
 import { SocialPlatformIcon } from "@/lib/social-icons";
 import { PLATFORM_LABEL, formatFollowers } from "@/lib/social-verify";

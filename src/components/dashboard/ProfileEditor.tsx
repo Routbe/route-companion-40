@@ -133,6 +133,7 @@ import { oauthAvatarOf } from "@/lib/oauth-avatar";
 import { BlueskyWizard } from "@/components/dashboard/BlueskyWizard";
 import { BookingBlockSettings } from "@/components/dashboard/BookingBlockSettings";
 import { GalleryBlockSettings } from "@/components/dashboard/GalleryBlockSettings";
+import { MediaEmbedBlockSettings } from "@/components/dashboard/MediaEmbedBlockSettings";
 import { SocialHandleInput } from "@/components/SocialHandleInput";
 import { isHandleBlock } from "@/lib/social-handles";
 
@@ -909,6 +910,12 @@ export function ProfileEditor() {
                           <div className="mt-3 space-y-2 border-t border-border pt-3">
                             {b.kind === "media_gallery" ? (
                               <GalleryBlockSettings
+                                value={b.value}
+                                onChange={(value) => patch(b.id, { value })}
+                                onTitle={(label) => patch(b.id, { label })}
+                              />
+                            ) : b.kind === "media_embed" ? (
+                              <MediaEmbedBlockSettings
                                 value={b.value}
                                 onChange={(value) => patch(b.id, { value })}
                                 onTitle={(label) => patch(b.id, { label })}
