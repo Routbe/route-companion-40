@@ -1010,7 +1010,10 @@ export function blockHref(block: ProfileBlock): string {
 
 /** Blokken die als interactieve widget renderen i.p.v. als gewone linkknop. */
 export const isWidgetBlock = (kind: string) =>
-  kind === "newsletter" || kind === "calendar" || kind === "booking_request";
+  kind === "newsletter" ||
+  kind === "calendar" ||
+  kind === "booking_request" ||
+  kind === "media_gallery";
 
 export const newBlockId = () =>
   `b_${Date.now().toString(36)}${Math.random().toString(36).slice(2, 6)}`;
