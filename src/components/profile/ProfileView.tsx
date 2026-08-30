@@ -357,7 +357,13 @@ export function ProfileView({
                 accent={t.accent ?? t.border ?? "currentColor"}
               />
             ) : isWidgetBlock(b.kind) || isBookingUrl(blockHref(b)) ? (
-              b.kind === "booking_request" ? (
+              b.kind === "media_gallery" ? (
+                <GalleryCard
+                  key={b.id}
+                  config={parseGalleryConfig(b.value)}
+                  style={buttonStyle}
+                />
+              ) : b.kind === "booking_request" ? (
                 <BookingCard
                   key={b.id}
                   handle={profile.username ?? ""}
