@@ -76,6 +76,7 @@ import { cn } from "@/lib/utils";
 import {
   BLOCK_CATEGORIES,
   BLOCK_KINDS,
+  BLOCK_TABS,
   CARD_STYLES,
   handleRuleHint,
   HANDLE_MIN_LENGTH,
@@ -236,6 +237,8 @@ export function ProfileEditor() {
   const [query, setQuery] = useState("");
   /** Standaard staat "Soeverein & Fediverse" voor: soevereine tools eerst. */
   const [cat, setCat] = useState<string>("featured");
+  /** Actieve curated tab in de "+ Add component"-drawer (`null` = klassieke categorieën). */
+  const [blockTab, setBlockTab] = useState<string | null>(null);
   /** Live view: realistisch telefoonframe of breed desktopvenster. */
   const [previewDevice, setPreviewDevice] = useState<"mobile" | "desktop">("mobile");
   /** Desktopscherm: werkelijke containerbreedte → schaalfactor voor het 1280px-virtuele viewport. */
