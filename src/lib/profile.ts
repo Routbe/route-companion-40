@@ -683,6 +683,12 @@ export const BLOCK_KINDS: {
     placeholder: "Plan een afspraak / gesprek",
   },
   {
+    kind: "media_gallery",
+    label: "Galerij / Media (ROUT native)",
+    category: "media",
+    placeholder: "Mijn galerij",
+  },
+  {
     kind: "promo",
     label: "Promo / Featured link",
     category: "contact",
