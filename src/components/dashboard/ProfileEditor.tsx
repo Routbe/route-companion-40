@@ -2204,13 +2204,37 @@ export function ProfileEditor() {
                 )}
               </div>
             </div>
+            {/* Curated high-value tabs */}
+            <div className="overflow-x-auto px-4 pb-2 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+              <div className="flex w-max min-w-full items-center gap-2">
+                {BLOCK_TABS.map((t) => (
+                  <button
+                    key={t.id}
+                    type="button"
+                    title={t.description}
+                    onClick={() => setBlockTab(blockTab === t.id ? null : t.id)}
+                    className={cn(
+                      "inline-flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 text-xs font-medium transition-colors",
+                      blockTab === t.id
+                        ? "border-primary/40 bg-primary/10 text-foreground"
+                        : "border-border text-muted-foreground hover:text-foreground",
+                    )}
+                  >
+                    {t.label}
+                  </button>
+                ))}
+              </div>
+            </div>
             <div className="overflow-x-auto px-4 pb-3 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               <div className="flex w-max min-w-full items-center gap-2">
                 {[{ id: "all", label: "All" }, ...BLOCK_CATEGORIES].map((c) => (
                   <button
                     key={c.id}
                     type="button"
-                    onClick={() => setCat(c.id)}
+                    onClick={() => {
+                      setCat(c.id);
+                      setBlockTab(null);
+                    }}
                     className={cn(
                       "inline-flex h-9 shrink-0 items-center gap-1.5 whitespace-nowrap rounded-full border px-3 text-xs font-medium transition-colors",
                       cat === c.id
