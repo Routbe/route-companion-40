@@ -251,7 +251,7 @@ export const profilePath = (username: string, verified?: boolean) =>
 export const BLOCK_KINDS: {
   kind: string;
   label: string;
-  category: "featured" | "socials" | "web" | "finance" | "media" | "contact";
+  category: "featured" | "socials" | "web" | "finance" | "media" | "contact" | "layout";
   placeholder: string;
   /** Turns a handle into a full URL. */
   base?: string;
@@ -694,7 +694,56 @@ export const BLOCK_KINDS: {
     category: "contact",
     placeholder: "https://…",
   },
+  // Layout-elementen: geen link, alleen visuele structuur op het profiel.
+  {
+    kind: "text",
+    label: "Tekstblok",
+    category: "layout",
+    placeholder: "Schrijf een korte tekst…",
+  },
+  {
+    kind: "spacer",
+    label: "Spacer / witruimte",
+    category: "layout",
+    placeholder: "",
+  },
 
+];
+
+/**
+ * Curated “+ Add component” tabs: vier high-value groepen bovenop de
+ * klassieke categorieën. Elke tab wijst naar bestaande block kinds.
+ */
+export const BLOCK_TABS: {
+  id: string;
+  label: string;
+  description: string;
+  kinds: string[];
+}[] = [
+  {
+    id: "standard",
+    label: "⚡ Standaard & Embeds",
+    description: "Smart links, universele embeds en opmaak",
+    kinds: ["link", "website", "media_gallery", "text", "spacer", "youtube", "spotify", "soundcloud"],
+  },
+  {
+    id: "sovereign",
+    label: "🌐 Soeverein & Sociaal",
+    description: "Fediverse, socials en eigen kanalen",
+    kinds: ["eyou", "wsocial", "bluesky", "mastodon", "matrix", "signal", "pixelfed", "substack", "instagram", "tiktok", "x", "github"],
+  },
+  {
+    id: "microapps",
+    label: "🧰 Native Micro-apps",
+    description: "Boekingen, contact en e-mailcapture",
+    kinds: ["booking_request", "calendar", "calcom", "calendly", "vcard", "newsletter"],
+  },
+  {
+    id: "commerce",
+    label: "💳 Commerce & Donaties",
+    description: "Tips, donaties en productshowcases",
+    kinds: ["kofi", "bmac", "patreon", "opencollective", "paypal", "stripe", "tikkie", "shop", "promo"],
+  },
 ];
 
 
