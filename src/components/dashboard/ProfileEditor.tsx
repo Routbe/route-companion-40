@@ -2172,13 +2172,20 @@ export function ProfileEditor() {
                   autoFocus
                   value={query}
                   onChange={(e) => setQuery(e.target.value)}
+                  onPaste={(e) => {
+                    const text = e.clipboardData.getData("text").trim();
+                    if (/^(https?:\/\/)?[\w-]+(\.[\w-]+)+/.test(text) && !text.includes(" ")) {
+                      e.preventDefault();
+                      setQuery(text);
+                    }
+                  }}
                   onKeyDown={(e) => {
                     if (e.key !== "Enter") return;
                     e.preventDefault();
                     const first = groups[0]?.items[0];
                     if (first) addBlock(first.kind);
                   }}
-                  placeholder="Search a platform…"
+                  placeholder="Zoek een component of plak direct een URL…"
                   className="input-field h-11 rounded-xl pl-9 pr-9"
                   aria-label="Search a component"
                 />
