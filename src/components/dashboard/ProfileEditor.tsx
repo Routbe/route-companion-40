@@ -131,6 +131,7 @@ import { withAuthTimeout, authFailureMessage } from "@/lib/auth-timeout";
 import { oauthAvatarOf } from "@/lib/oauth-avatar";
 import { BlueskyWizard } from "@/components/dashboard/BlueskyWizard";
 import { BookingBlockSettings } from "@/components/dashboard/BookingBlockSettings";
+import { GalleryBlockSettings } from "@/components/dashboard/GalleryBlockSettings";
 import { SocialHandleInput } from "@/components/SocialHandleInput";
 import { isHandleBlock } from "@/lib/social-handles";
 
