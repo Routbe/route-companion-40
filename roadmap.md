@@ -28,4 +28,4 @@
 - [ ] Realtime publieke linkpreview in handle-invoer
 - [ ] Platformspecifieke inline validatie (Instagram/GitHub/X)
 - [ ] Lowercase normalisatie bij opslaan & renderen
-- [ ] Native `media_gallery` component (Studio editor, upload/URL-modal, GalleryCard)
+- [x] Native `media_gallery` component (Studio editor, upload/URL-modal, GalleryCard) — db/35_gallery_media.sql moet nog op Neon uitgevoerd worden
