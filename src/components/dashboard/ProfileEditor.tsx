@@ -503,14 +503,31 @@ export function ProfileEditor() {
     if (!silent) toast.success("Studio saved");
   };
 
-  const addBlock = (kind: string) => {
+  const addBlock = (kind: string, value = "") => {
     const def = BLOCK_KINDS.find((k) => k.kind === kind)!;
     const id = newBlockId();
-    setBlocks((b) => [...b, { id, kind, label: def.label, value: "" }]);
+    setBlocks((b) => [...b, { id, kind, label: def.label, value }]);
     setOpenBlock(id);
     setDrawer(false);
     // Search term and category are kept for next time.
   };
+
+  /**
+   * Plakt de maker een geldige URL in het zoekveld, dan bieden we direct een
+   * vooraf ingevuld Smart Link-component aan (fast paste → smart link).
+   */
+  const pastedUrl = useMemo(() => {
+    const q = query.trim();
+    if (q.length < 6 || q.includes(" ")) return null;
+    const withProto = /^https?:\/\//i.test(q) ? q : `https://${q}`;
+    try {
+      const u = new URL(withProto);
+      if (!u.hostname.includes(".")) return null;
+      return u.toString();
+    } catch {
+      return null;
+    }
+  }, [query]);
 
   const quickCreate = (kind: (typeof QUICK_CREATE)[number]["kind"]) => {
     if (kind === "__socials") {
@@ -573,6 +590,17 @@ export function ProfileEditor() {
 
   const groups = useMemo(() => {
     const q = query.trim().toLowerCase();
+    // Curated tab actief → toon alleen de kinds van die tab als één groep.
+    if (blockTab) {
+      const tab = BLOCK_TABS.find((t) => t.id === blockTab);
+      if (tab) {
+        const items = tab.kinds
+          .map((kind) => BLOCK_KINDS.find((k) => k.kind === kind))
+          .filter((k): k is (typeof BLOCK_KINDS)[number] => Boolean(k))
+          .filter((k) => !q || k.label.toLowerCase().includes(q));
+        return items.length ? [{ id: tab.id, label: tab.label, items }] : [];
+      }
+    }
     return BLOCK_CATEGORIES.filter((c) => cat === "all" || cat === c.id)
       .map((c) => ({
         ...c,
@@ -581,7 +609,7 @@ export function ProfileEditor() {
         ),
       }))
       .filter((c) => c.items.length > 0);
-  }, [cat, query]);
+  }, [cat, query, blockTab]);
 
   // Top clicked components: proportional estimate over total scans, ranked by position
   // until per-block click tracking ships. Purely presentational, no fabricated identities.
