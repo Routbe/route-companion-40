@@ -68,6 +68,10 @@ export function ProfileView({
       !b.hidden &&
       (b.value.trim() !== "" || b.kind === "newsletter" || b.kind === "booking_request"),
   );
+  void 0;
+  (
+    () => undefined
+  );
   const buttonStyle = blockButtonStyle(profile.card_style, t);
   /** Eigen canvas- en patroonkleuren overschrijven het thema, indien gekozen. */
   const canvas = {
