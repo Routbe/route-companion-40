@@ -876,7 +876,13 @@ export function ProfileEditor() {
 
                         {open && (
                           <div className="mt-3 space-y-2 border-t border-border pt-3">
-                            {b.kind === "booking_request" ? (
+                            {b.kind === "media_gallery" ? (
+                              <GalleryBlockSettings
+                                value={b.value}
+                                onChange={(value) => patch(b.id, { value })}
+                                onTitle={(label) => patch(b.id, { label })}
+                              />
+                            ) : b.kind === "booking_request" ? (
                               <BookingBlockSettings
                                 value={b.value}
                                 onChange={(value) => patch(b.id, { value })}
